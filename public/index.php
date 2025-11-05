@@ -3,6 +3,12 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../src/model/room.php';
 session_start();
+// $x = 1;
+// $y =& $x;
+// $z =& $y;
+// $z++;
+
+echo "x: $x <br>y: $y<br>z: $z <br>";
 
 // session_unset();
 if(!isset($_SESSION["history"])){
@@ -10,8 +16,8 @@ if(!isset($_SESSION["history"])){
     $_SESSION["map"] = new Room("hall");
     $_SESSION["curRoom"] =& $_SESSION["map"];
     $_SESSION["map"] -> path = ["hall"];
-    $_SESSION["map"] -> doors[] = new Room("Library");
-    $_SESSION["map"] -> doors[] = new Room("Armory");
+    $_SESSION["map"] -> doors[] = new Room("library");
+    $_SESSION["map"] -> doors[] = new Room("armory");
     echo "<br>curRoom: " . json_encode($_SESSION["curRoom"]) . "<br>";
 }
 

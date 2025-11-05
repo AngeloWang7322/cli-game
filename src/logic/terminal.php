@@ -3,57 +3,20 @@
 declare(strict_types=1);
 
 $input = trim($_POST["command"] ?? "");
-$response = "unknown spell";
+$response = "";
 $inputDirectory = implode("/", $_SESSION["curRoom"]->path);
 
 echo "map:<br>" . json_encode($_SESSION["map"]) . "<br>";
 echo "cur: <br>" . json_encode($_SESSION["curRoom"]) . "<br>";
 try {
     $inputArray = explode(" ", $input);
+    $index = 0;
+
     echo "<br>" . json_encode($inputArray) . "<br>";
     switch ($inputArray[0]) {
-        case "cd": {
+        case "cd": {    
             $pathArray = explode("/", $inputArray[1]);
-            $index = 0;
-            $pathLength = sizeof($pathArray);
-            echo json_encode($pathArray);
-            switch ($pathArray[0]) {
-                case "hall": {
-                    moveToPath($inputArray);
-                    break;
-                }
-                case '..': {
-                    echo "in . path!<br>";
-                    while ($pathArray[$index] == '..' && $index < $pathLength) {
-                        $index++;
-                        echo "index: $index <br>";
-                    }
-                    echo "calling moveToPath with " . json_encode(array_slice($_SESSION["curRoom"]->path, 0, count($_SESSION["curRoom"]->path) - $index)) . "<br>";
-                    moveToPath(array_slice($_SESSION["curRoom"]->path, 0, count($_SESSION["curRoom"]->path) - $index));
-                }
-                default: {
-                    $tempRoom =& $_SESSION["curRoom"];
-                    for ($i = $index; $i < $pathLength; $i++) {
-                        echo "comparing if $pathArray[$i] exists in " . json_encode($_SESSION["curRoom"]->doors);
-                        $pathFound = false;
-                        for ($j = 0; $j < count($tempRoom -> doors); $j++) {
-                            echo "<br>comparing $pathArray[$i] to " . $tempRoom -> doors[$j] -> name . "<br>";
-                            if ($pathArray[$i] == $tempRoom -> doors[$j] -> name) {
-                                $tempRoom =& $tempRoom -> doors[$j];
-                                echo "found!!!";
-                                $pathFound = true;
-                                break;
-                            }
-                        }
-                        if (!$pathFound) {
-                            throw (new Exception(message: "invalid path provided"));
-                        }
-                    }
-                    $_SESSION["curRoom"] =& $tempRoom;
-
-                }
-            }
-            $response = "moved";
+            $_SESSION["curRoom"] =& getRoom($pathArray);
             break;
         }
         case "mkdir": {
@@ -61,8 +24,6 @@ try {
                 $response = "no directory name provided";
                 break;
             }
-            $response = "";
-
             array_push($_SESSION["curRoom"]->doors, new Room($inputArray[1]));
             break;
         }
@@ -79,8 +40,13 @@ try {
             break;
         }
         case "rm": {
-            if ("") {
-
+            $removeRoomIndex = hasDoor($_SESSION["curRoom"], $inputArray[1]);
+            if ($removeRoomIndex >= 0)
+            {
+                unset($_SESSION["curRoom"] -> doors[$removeRoomIndex]);
+            }
+            else{
+                throw new Exception("couldn't find '$inputArray[1]'");
             }
         }
     }
@@ -93,22 +59,72 @@ $_SESSION["history"][] =
         "command" => $input,
         "response" => $response
     ];
-function moveToPath($path)
+
+function &getRoom($path, $tempRoom = null): Room
 {
-    echo "count: " . count($path);
-    $tempRoomRef =& $_SESSION["map"];
-    for ($i = 1; $i < count($path); $i++) {
-        echo "<br>i: $i, path: $path[$i]";
-        for ($j = 0; $j <  count($tempRoomRef -> doors); $j++) {
-            echo "<br>comparing $path[$i] to " . $tempRoomRef-> doors[$j] -> name . "<br>";
-            if ($path[$i] == $tempRoomRef->doors[$j] -> name) {
-                $tempRoomRef =& $tempRoomRef -> doors[$j];
-                echo "found!!!";
-                continue 2;
+    $index = 0;
+    if ($tempRoom == null) {
+        $tempRoom = $_SESSION["curRoom"];
+    }
+    switch ($path[0]) {
+        case "hall": {
+            return getRoomAbsolute($path);
+        }
+        case '..': {
+            if ($_SESSION["curRoom"]->name == "hall") {
+                throw new Exception("invalid path");
             }
+            while ($path[$index] == '..' && $index < $path) {
+                $index++;
+            }
+            $tempRoom =& getRoomAbsolute(array_slice($_SESSION["curRoom"]->path, 0, count($tempRoom->path) - $index));
+        }
+        default: {
+            if ($index == $path) {
+                return $tempRoom;
+            }
+            return getRoomRelative(array_slice($path, $index), $tempRoom);
         }
     }
-    echo "<br>curRoom changing";
-    $_SESSION["curRoom"] =& $tempRoomRef;
+}
+function &getRoomAbsolute($path): Room
+{
+    $tempRoom = &$_SESSION["map"];
+    $roomIndex = 0;
+    for ($i = 1; $i < count($path); $i++) {
+        $roomIndex = hasDoor($tempRoom, $path[$i]);
+        if ($roomIndex >= 0) {
+            $tempRoom =& $tempRoom ->doors[$roomIndex];
+        }
+        else{
+            throw(new Exception("path not found"));
+        }
+    }
+    return $tempRoom;
+}
+function &getRoomRelative($path, $tempRoom = null): Room
+{
+    $roomIndex = 0;
+    if ($tempRoom == null) {
+        $tempRoom =& $_SESSION["curRoom"];
+    }
+    for ($i = 0; $i < count($path); $i++) {
+        $roomIndex = hasDoor($tempRoom, $path[$i]);
+        if ($roomIndex >= 0) {
+            $tempRoom =& $tempRoom->doors[$roomIndex];
+        } else {
+            throw (new Exception("path not found"));
+        }
+    }
+    return $tempRoom;
+}
+function hasDoor($room, $name)
+{
+    for ($i = 0; $i < count($room->doors); $i++) {
+        if ($name == $room->doors[$i]->name) {
+            return $i;
+        }
+    }
+    return -1;
 }
 ?>

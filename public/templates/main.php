@@ -2,7 +2,6 @@
 $title = "Shell spell";
 $extraCss = 'main.css';
 ?>
-
 <div class="game-container">
     <div class="ui-wrapper">
         <div class="spellbook-wrapper">

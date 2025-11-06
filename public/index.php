@@ -5,6 +5,7 @@ require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../src/model/room.php';
 require __DIR__ . '/../src/model/user.php';
 require __DIR__ . '/../src/model/item.php';
+require __DIR__ . '/../src/model/scroll.php';
 session_start();
 // $x = 1;
 // $y =& $x;
@@ -13,7 +14,7 @@ session_start();
 
 // echo "x: $x <br>y: $y<br>z: $z <br>";
 
-// session_unset();
+session_unset();     
 if (!isset($_SESSION["history"])) {
     $_SESSION["history"] = [];
     $_SESSION["map"] = new Room("hall");
@@ -27,7 +28,16 @@ if (!isset($_SESSION["history"])) {
         ActionType::MANA,
         Rarity::COMMON
     );
+    $_SESSION["map"]->items[] = new Item(
+        "testScroll",
+        ItemType::SCROLL,
+        ActionType::OPEN_SCROLL,
+        Rarity::COMMON,
+        "This is a test scroll content. It is used to demonstrate the scroll functionality in the" .
+            " game. You can read this scroll to gain knowledge and power."
+    );
     $_SESSION["user"] = new User();
+    $_SESSION["openedScroll"] = new Scroll("", "");
 }
 
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));

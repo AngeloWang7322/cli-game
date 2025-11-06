@@ -1,6 +1,13 @@
+.game-container {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
 .ui-wrapper {
     height: 100vh;
+    width: 100vw;
     display: flex;
+    position: absolute;
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -11,12 +18,11 @@
     justify-content: end;
     align-items: start;
     position: absolute;
-    height: 320px;
-    width: 500px;
-    bottom: 100px;
-    left: 0;
-    right: 0;
-    margin: auto;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 242px;
+    width:500px;
     padding: 16px 24px;
     background-color: rgba(255, 255, 255, 0.041);
     overflow: hidden;
@@ -48,7 +54,9 @@
     display: flex;
     flex-direction: row;
     position: absolute;
-    bottom: 24px;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     align-items: center;
     width: 700px;
     height: 34px;
@@ -60,4 +68,34 @@
 }
 .mana-text{
 position: absolute; 
+}
+.scroll-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(150, 150, 97);
+    width: 424px;
+    height: 764px;
+}
+.scroll-header{
+    position: absolute;
+    top: 5;
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+.scroll-content{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    text-justify: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

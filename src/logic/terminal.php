@@ -64,9 +64,17 @@ try {
                 }
                 break;
             }
+        case "type": {
+                $item = &getItem(null, $inputArray[1]);
+                echo "foudn item:" . json_encode($item);
+                $_SESSION["openedScroll"] -> header = $item->name;
+                $_SESSION["openedScroll"] -> content = $item->content;
+                $_SESSION["openedScroll"] -> isOpen = true;
+                break;
+            }
         default: {
-                $item =& getItem(null, $inputArray[0]);
-                $item -> executeAction();
+                $item = &getItem(null, $inputArray[0]);
+                $item->executeAction();
                 $fileType = stristr($inputArray[0], '.');
             }
     }

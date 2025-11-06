@@ -5,8 +5,7 @@ class Item
     public ItemType $type;
     public ActionType $action;
     public Rarity $rarity;
-    public string $content;
-
+    public $content;
     public function __construct($name, $type, $action = null, $rarity = Rarity::COMMON, $content = "")
     {
         $this->name = $name;

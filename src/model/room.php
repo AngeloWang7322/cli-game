@@ -5,12 +5,14 @@ class Room
     public $path;
     public array $doors = [];
     public array $items = [];
+    public Role $requiredRole;
 
-    function __construct($name)
+    function __construct($name, $requiredRole = Role::WANDERER)
     {
         $this->name = $name;
         $this->path = $_SESSION["curRoom"] -> path ?? ["root"];
         array_push($this->path, $name);
+        $this->requiredRole = $requiredRole;
     }
 
     function _cd($newDir)
@@ -42,5 +44,12 @@ class Room
         }
         $tempRoom["doors"][] = [$newDoor];
     }  
+}
+enum Role: string {
+    case WANDERER = "wanderer";
+    case APPRENTICE = "apprentice";
+    case ARCHIVIST = "archivist";
+    case CONJURER = "conjurer";
+    case ROOT = "root";
 }
 ?>

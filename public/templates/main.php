@@ -5,7 +5,6 @@ $extraCss = 'main.css';
 <div class="game-container">
     <div class="ui-wrapper">
         <div class="spellbook-wrapper">
-
             <div class="history-container">
                 <?php
                 for ($i = 0; $i < count($_SESSION["history"]); $i++)

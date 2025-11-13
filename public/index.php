@@ -15,15 +15,15 @@ if (!isset($_SESSION["history"])) {
     $_SESSION["map"] = new Room("hall");
     $_SESSION["curRoom"] = &$_SESSION["map"];
     $_SESSION["map"]->path = ["hall"];
-    $_SESSION["map"]->doors[] = new Room("library");
-    $_SESSION["map"]->doors[] = new Room("armory");
-    $_SESSION["map"]->items[] = new Item(
+    $_SESSION["map"]->doors["library"] = new Room("library");
+    $_SESSION["map"]->doors["armory"] = new Room("armory");
+    $_SESSION["map"]->items["manaPotion.exe"] = new Item(
         "manaPotion",
         ItemType::SPELL,
         ActionType::MANA,
         Rarity::COMMON
     );
-    $_SESSION["map"]->items[] = new Item(
+    $_SESSION["map"]->items["testScroll.txt"] = new Item(
         "testScroll",
         ItemType::SCROLL,
         ActionType::OPEN_SCROLL,

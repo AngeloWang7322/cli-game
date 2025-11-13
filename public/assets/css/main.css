@@ -99,3 +99,21 @@ position: absolute;
     justify-content: center;
     align-items: center;
 }
+.elements-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+
+}
+.element {
+    display: flex;
+    margin: 48px 24px;
+    height: 180px;
+    width: 100px;
+    background-color:rgb(84, 31, 31);
+
+}
+    .item {
+        background-color: rgb(121, 117, 41);
+    }

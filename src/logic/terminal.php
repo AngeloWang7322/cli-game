@@ -8,7 +8,7 @@ $inputCommand = $_POST["command"];
 
 $inputArgs = organizeInput(explode(" ", $inputCommand));
 
-echo "map:<br>" . json_encode($_SESSION["map"]) . "<br>";
+// echo "map:<br>" . json_encode($_SESSION["map"]) . "<br>";
 // echo "curRoom: <br>" . json_encode($_SESSION["curRoom"]) . "<br>";
 try {
     echo "<br>" . json_encode($inputArray) . "<br>";
@@ -58,7 +58,6 @@ try {
 
             if(stristr($inputArgs["path"][count($inputArgs["path"]) - 1], '.')){
                 $tempItem =& getItem($inputArgs["path"]);
-                echo "got item!";
                 $destinationRoom -> items[$tempItem -> name] = $tempItem;
             }
             else{
@@ -66,6 +65,7 @@ try {
                 $destinationRoom ->doors[$tempRoom->name] = $tempRoom;
             }
             deleteElement($inputArgs["path"]);
+            break;
         }
         case "cat": {
                 $item = &getItem($inputArgs["path"]);
@@ -77,7 +77,7 @@ try {
         default: {
                 $item = &getItem($inputArgs["command"]);
                 $item->executeAction();
-                $fileType = stristr($inputArgs["path"][count($inputArgs["path"])- 1], '.');
+                $fileType =  stristr($inputArgs["path"][count($inputArgs["path"])- 1], '.');
             }
     }
 } catch (Exception $e) {
@@ -103,7 +103,6 @@ function organizeInput(array $inputArray)
             $inputArgs["flags"][] = $inputArray[$i];
         } else {
             if(!empty($inputArgs["path"])){
-                echo "<br>is not Empty<br>";
                 $inputArgs["path_2"] = explode("/", $inputArray[$i]);
             }
             else{
@@ -111,7 +110,6 @@ function organizeInput(array $inputArray)
             }
         }
     }
-    echo json_encode($inputArgs) . "<br>";
     return $inputArgs;
 }
 function &getRoom($path): Room
@@ -137,7 +135,7 @@ function &getRoom($path): Room
                 $tempRoom = &getRoomAbsolute(array_slice($_SESSION["curRoom"]->path, 0, count($tempRoom->path) - $index));
             }
         default: {
-                if ($index == $path) {
+                if ($index == count($path)) {
                     return $tempRoom;
                 }
                 echo "defulatt: " . json_encode(array_slice($path, $index));
@@ -175,10 +173,11 @@ function &getRoomRelative($path, $tempRoom = null): Room
 }
 function &getItem($path): Item
 {
-    echo "path " . json_encode($path);
-    $tempRoom = &$_SESSION["curRoom"];
     if (count($path) > 1) {
         $tempRoom = &getRoom(array_splice($path, 0, count($path) - 2)   );
+    }
+    else {
+        $tempRoom = &$_SESSION["curRoom"];
     }
 
     if (in_array($path[count($path) - 1], array_keys($tempRoom->items))) {

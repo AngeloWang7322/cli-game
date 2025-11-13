@@ -3,6 +3,18 @@ $title = "Shell spell";
 $extraCss = 'main.css';
 ?>
 <div class="game-container">
+    <div class="elements-wrapper">
+        <?php
+        foreach ($_SESSION["curRoom"] -> doors as $door)
+        {
+            echo "<div class='element'> <p>" . $door -> name . "</p> </div>";
+        }
+        foreach ($_SESSION["curRoom"] -> items as $item)
+        {
+            echo "<div class='element item'> <p>" . $item-> name . "</p> </div>";
+        }
+        ?>
+    </div>
     <div class="ui-wrapper">
         <div class="spellbook-wrapper">
             <div class="history-container">

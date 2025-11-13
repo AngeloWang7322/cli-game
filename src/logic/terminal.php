@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 $response = "";
@@ -22,16 +23,16 @@ try {
             }
         case "mkdir": {
                 if ($inputArgs["path"] == null) {
-                    throw new Exception ("no directory name provided");
+                    throw new Exception("no directory name provided");
                     break;
                 }
-                $roomName = $inputArgs["path"][count($inputArgs["path"])- 1];
-                $tempRoom =& getRoom(array_slice($inputArgs["path"], 0, count($inputArgs["path"]) - 1));
-                $tempRoom -> doors[$roomName] = new Room($roomName);
+                $roomName = $inputArgs["path"][count($inputArgs["path"]) - 1];
+                $tempRoom = &getRoom(array_slice($inputArgs["path"], 0, count($inputArgs["path"]) - 1));
+                $tempRoom->doors[$roomName] = new Room($roomName);
                 break;
             }
         case "ls": {
-                $lsArray = [];  
+                $lsArray = [];
                 foreach ($_SESSION["curRoom"]->doors as $door) {
                     $lsArray[] = $door->name;
                 }
@@ -46,22 +47,37 @@ try {
                 break;
             }
         case "rm": {
-                // echo "<br><br>aa: " . json_encode(explode("/", $inputArray[1]));
                 deleteElement($inputArgs["path"]);
                 break;
             }
+        case "mv": {
+            $destinationRoom =& getRoom($inputArgs["path_2"]);
+            if(empty($inputArgs["path_2"])){
+                throw new Exception("no source path provided");
+            }
+
+            if(stristr($inputArgs["path"][count($inputArgs["path"]) - 1], '.')){
+                $tempItem =& getItem($inputArgs["path"]);
+                echo "got item!";
+                $destinationRoom -> items[$tempItem -> name] = $tempItem;
+            }
+            else{
+                $tempRoom = &getRoom($inputArgs["path"]);
+                $destinationRoom ->doors[$tempRoom->name] = $tempRoom;
+            }
+            deleteElement($inputArgs["path"]);
+        }
         case "cat": {
-                $item = &getItem(null, $inputArray[1]);
-                // echo "found item:" . json_encode($item);
+                $item = &getItem($inputArgs["path"]);
                 $_SESSION["openedScroll"]->header = $item->name;
                 $_SESSION["openedScroll"]->content = $item->content;
                 $_SESSION["openedScroll"]->isOpen = true;
                 break;
             }
         default: {
-                $item = &getItem(null, $inputArray[0]);
+                $item = &getItem($inputArgs["command"]);
                 $item->executeAction();
-                $fileType = stristr($inputArray[0], '.');
+                $fileType = stristr($inputArgs["path"][count($inputArgs["path"])- 1], '.');
             }
     }
 } catch (Exception $e) {
@@ -79,23 +95,34 @@ function organizeInput(array $inputArray)
     $inputArgs = [
         "command" => $inputArray[0],
         "path" => [],
+        "path_2" => [],
         "flags" => [],
     ];
     for ($i = 1; $i < count($inputArray); $i++) {
         if ($inputArray[$i][0] == '-') {
             $inputArgs["flags"][] = $inputArray[$i];
         } else {
-            $inputArgs["path"] = explode("/", $inputArray[$i]);
+            if(!empty($inputArgs["path"])){
+                echo "<br>is not Empty<br>";
+                $inputArgs["path_2"] = explode("/", $inputArray[$i]);
+            }
+            else{
+                $inputArgs["path"] = explode("/", $inputArray[$i]);
+            }
         }
     }
+    echo json_encode($inputArgs) . "<br>";
     return $inputArgs;
 }
-function &getRoom($path, $tempRoom = null): Room
+function &getRoom($path): Room
 {
     $index = 0;
-    if ($tempRoom == null) {
-        $tempRoom =& $_SESSION["curRoom"];
+    $tempRoom = &$_SESSION["curRoom"];
+
+    if(empty($path)){
+        return $tempRoom;
     }
+    
     switch ($path[0]) {
         case "hall": {
                 return getRoomAbsolute($path);
@@ -104,7 +131,7 @@ function &getRoom($path, $tempRoom = null): Room
                 if ($_SESSION["curRoom"]->name == "hall") {
                     throw new Exception("invalid path");
                 }
-                while ($path[$index] == '..' && $index < $path) {
+                while ($path[$index] == '..' && $index < count($path)) {
                     $index++;
                 }
                 $tempRoom = &getRoomAbsolute(array_slice($_SESSION["curRoom"]->path, 0, count($tempRoom->path) - $index));
@@ -113,7 +140,9 @@ function &getRoom($path, $tempRoom = null): Room
                 if ($index == $path) {
                     return $tempRoom;
                 }
-                return getRoomRelative(array_slice($path, 0, count($tempRoom -> path) - $index), $tempRoom);
+                echo "defulatt: " . json_encode(array_slice($path, $index));
+
+                return getRoomRelative(array_slice($path, $index), $tempRoom);
             }
     }
 }
@@ -121,10 +150,10 @@ function &getRoomAbsolute($path): Room
 {
     $tempRoom = &$_SESSION["map"];
     for ($i = 1; $i < count($path); $i++) {
-        if (in_array($path[$i], array_keys($tempRoom -> doors))) {
+        if (in_array($path[$i], array_keys($tempRoom->doors))) {
             $tempRoom = &$tempRoom->doors[$path[$i]];
         } else {
-            throw (new Exception("path not found"));
+            throw (new Exception("path not found absolute"));
         }
     }
     return $tempRoom;
@@ -135,22 +164,21 @@ function &getRoomRelative($path, $tempRoom = null): Room
         $tempRoom = &$_SESSION["curRoom"];
     }
     for ($i = 0; $i < count($path); $i++) {
-        if (in_array($path[$i], array_keys($tempRoom -> doors))) {
+        if (in_array($path[$i], array_keys($tempRoom->doors))) {
+            echo "is in room";
             $tempRoom = &$tempRoom->doors[$path[$i]];
         } else {
-            throw (new Exception("path not found"));
+            throw (new Exception("path not found relative"));
         }
     }
     return $tempRoom;
 }
-function &getItem($path = null, $itemName): Item
+function &getItem($path): Item
 {
-    echo "getting item $itemName<br>";
+    echo "path " . json_encode($path);
     $tempRoom = &$_SESSION["curRoom"];
-    if ($path == null) {
-        $path = &$_SESSION["curRoom"]->path;
-    } else {
-        $tempRoom = &getRoom(array_splice($path, 0, count($path) - 2));
+    if (count($path) > 1) {
+        $tempRoom = &getRoom(array_splice($path, 0, count($path) - 2)   );
     }
 
     if (in_array($path[count($path) - 1], array_keys($tempRoom->items))) {
@@ -159,17 +187,7 @@ function &getItem($path = null, $itemName): Item
         throw new Exception("item not found");
     }
 }
-function hasElementWithName($array, $name)
-{
-    echo "<br> name: $name<br>";
-    for ($i = 0; $i < count($array); $i++) {
-        echo "comparing $name with " . $array[$i]->name . "<br>";
-        if ($name == $array[$i]->name) {
-            return $i;
-        }
-    }
-    return -1;
-}
+
 function deleteElement($path)
 {
     if (count($path) > 2) {
@@ -178,16 +196,13 @@ function deleteElement($path)
         $tempRoom = &$_SESSION["curRoom"];
     }
 
-    if(in_array($path[count($path) - 1], array_keys($tempRoom ->doors))){
-        unset($tempRoom ->doors[$path[count($path) - 1]]); 
-    }
-    else if(in_array($path[count($path) - 1], array_keys( $tempRoom ->items))){
-        unset($tempRoom ->items[$path[count($path) - 1]]); 
-    }
-    else{
+    if (in_array($path[count($path) - 1], array_keys($tempRoom->doors))) {
+        unset($tempRoom->doors[$path[count($path) - 1]]);
+    } else if (in_array($path[count($path) - 1], array_keys($tempRoom->items))) {
+        unset($tempRoom->items[$path[count($path) - 1]]);
+    } else {
         throw new Exception("element not found");
     }
-
 }
 function editMana($amount)
 {

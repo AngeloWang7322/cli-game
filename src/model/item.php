@@ -23,9 +23,10 @@ class Item
     public function executeAction()
     {
         $actionFunction = $this -> action -> value;
+        echo "<br>executing: " . $actionFunction;
         $this -> $actionFunction();
     }
-    function manaAction()
+    function getMana()
     {
         switch ($this->rarity) {
             case Rarity::COMMON:
@@ -49,7 +50,7 @@ enum ItemType: string
 }
 enum ActionType: string
 {
-    case MANA = "manaAction";
+    case MANA = "getMana";
     case OPEN_SCROLL = "openScroll";
 }
 enum Rarity: string

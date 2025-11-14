@@ -12,7 +12,7 @@ $x = 1;
 $y = &$x;
 $z = $y;
 $x = 2;
-echo ("x: $x, y: $y, z: $z<br>");
+// echo ("x: $x, y: $y, z: $z<br>");
 // session_unset();     
 if (!isset($_SESSION["history"])) {
     $_SESSION["history"] = [];

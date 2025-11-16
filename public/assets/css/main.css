@@ -1,6 +1,5 @@
 .game-container {
     height: 100vh;
-    width: 100vw;
     overflow: hidden;
 }
 
@@ -10,14 +9,15 @@
     justify-content: end;
     align-items: start;
     position: absolute;
-    bottom: 0%;
+    bottom: -8%;
     left: 50%;
     transform: translate(-50%, -50%);
-    height: 242px;
-    width:500px;
+    height: 220px;
+    width:600px;
     padding: 16px 24px;
-    background-color: rgba(255, 255, 255, 0.041);
+    background-color: rgba(49, 49, 49, 0.363);
     overflow: hidden;
+    z-index: 5;
 }
 .history-container {
     display: flex;
@@ -27,12 +27,15 @@
     display: flex;
     flex-direction: row;
     align-items: end;
+    width: 100%;
 }
 .command-input{
-    background-color: rgba(255, 255, 255, 0.014);
+    background-color: rgba(255, 255, 255, 0.048);
     border: 0px;
     outline: none;
-    color: rgba(255, 255, 255, 0.082);
+    color: rgb(255, 255, 255);
+    width: 100%;
+    resize: both;
     margin: 0;
 }
 .command-input:focus{
@@ -46,13 +49,13 @@
     display: flex;
     flex-direction: row;
     position: absolute;
-    bottom: 5%;
+    bottom: 0%;
     left: 50%;
     transform: translate(-50%, -50%);
     align-items: center;
-    width: 700px;
+    width: 800px;
     height: 34px;
-    background-color: rgba(255, 255, 255, 0.13);
+    background-color: rgba(255, 255, 255, 0.164);
 }
 .mana-bar{
     background-color: rgb(110, 70, 255);
@@ -75,6 +78,7 @@
     background-color: rgb(150, 150, 97);
     width: 424px;
     height: 764px;
+    z-index: 10;
 }
 .scroll-header{
     position: absolute;

@@ -70,9 +70,9 @@ try {
                 break;
             }
         case "cat": {
-                $item = &getItem($inputArgs["path"]);
-                $_SESSION["openedScroll"]->header = $item->name; 
-                $_SESSION["openedScroll"]->content = $item->content;
+                $catItem = &getItem($inputArgs["path"]);
+                $_SESSION["openedScroll"]->header = $catItem->name; 
+                $_SESSION["openedScroll"]->content = $catItem->content;
                 $_SESSION["openedScroll"]->isOpen = true;
                 break;
             }

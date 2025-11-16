@@ -1,6 +1,7 @@
 <?php
 $title = "Shell spell";
 $extraCss = 'main.css';
+$script = "main.js";
 ?>
 <div class="game-container">
     <div class="elements-wrapper">
@@ -33,14 +34,12 @@ $extraCss = 'main.css';
                 $tempPathString = implode("/", $_SESSION["curRoom"]->path);
                 echo $tempPathString . ">";
                 ?>
-                <form class="command-input" method="post" required>
+                <form class="command-input" method="post">
                     <input type="hidden" value="enterCommand" name="action">
-                    <input name="command" @class="command-input" type="text" autofocus>
+                    <input name="command" class="command-input" type="text"  autocomplete="off"autofocus>
                 </form>
             </div>
-
         </div>
-
         <div class="mana-display-container">
             <div class="mana-bar" style="width:
             <?php

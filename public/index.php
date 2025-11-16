@@ -48,8 +48,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 require __DIR__ . "/../src/logic/terminal.php";
                 break;
             }
+        case "closeScroll": {
+                require __DIR__ . "/../src/logic/game.php";
+                break;
+            }
     }
 }
+
 
 $routes = [
     '' => 'templates/main.php',

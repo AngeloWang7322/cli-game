@@ -8,12 +8,12 @@ require __DIR__ . '/../src/model/item.php';
 require __DIR__ . '/../src/model/scroll.php';
 
 session_start();
-$x = 1;
-$y = &$x;
-$z = $y;
-$x = 2;
-//echo ("x: $x, y: $y, z: $z<br>");
-// session_unset();     
+// $x = 1;
+// $y = &$x;
+// $z = $y;
+// $x = 2;
+// echo ("x: $x, y: $y, z: $z<br>");
+// session_unset();         
 if (!isset($_SESSION["history"])) {
     $_SESSION["history"] = [];
     $_SESSION["map"] = new Room("hall");
@@ -21,11 +21,21 @@ if (!isset($_SESSION["history"])) {
     $_SESSION["map"]->path = ["hall"];
     $_SESSION["map"]->doors["library"] = new Room("library");
     $_SESSION["map"]->doors["armory"] = new Room("armory");
+    $_SESSION["map"]->doors["passage"] = new Room("passage");
+    $_SESSION["map"]->doors["passage"]->doors["staircase"] = new Room(name: "staircase", path: $_SESSION["map"]-> doors["passage"]-> path);
+
     $_SESSION["map"]->items["manaPotion.exe"] = new Item(
         "manaPotion",
         ItemType::SPELL,
         ActionType::MANA,
         Rarity::COMMON
+    );
+      $_SESSION["map"]->items["grimoire.txt"] = new Item(
+        "grimoire",
+        ItemType::SCROLL,
+        ActionType::OPEN_SCROLL,
+        Rarity::COMMON,
+        "OPEN SCROLL: <br>'cat [scroll name]'<br>"
     );
     $_SESSION["map"]->items["testScroll.txt"] = new Item(
         "testScroll",
@@ -48,8 +58,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 require __DIR__ . "/../src/logic/terminal.php";
                 break;
             }
+        case "closeScroll": {
+                require __DIR__ . "/../src/logic/game.php";
+                break;
+            }
     }
 }
+
 
 $routes = [
     '' => 'templates/main.php',

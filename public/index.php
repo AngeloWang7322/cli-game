@@ -13,7 +13,7 @@ session_start();
 // $z = $y;
 // $x = 2;
 // echo ("x: $x, y: $y, z: $z<br>");
-// session_unset();         
+session_unset();         
 if (!isset($_SESSION["history"])) {
     $_SESSION["history"] = [];
     $_SESSION["map"] = new Room("hall");
@@ -69,6 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $routes = [
     '' => 'templates/main.php',
     'login' => 'templates/login.php',
+    'authentication' => 'templates/authentication.php',
     'profile' => 'templates/profile.php',
     'notfound' => 'templates/notfound.php'  
 ];

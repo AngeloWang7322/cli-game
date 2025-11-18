@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'db.php';
+// require_once "./cli-game/src/db.php";
 
 $errors = [];
 
@@ -63,6 +63,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <button type="submit">Einloggen</button>
     </form>
 
-    <p>Noch kein Konto? <a href="register.php">Registrieren</a></p>
+    <p>Noch kein Konto? <a href="authentication">Registrieren</a></p>
 </body>
 </html>

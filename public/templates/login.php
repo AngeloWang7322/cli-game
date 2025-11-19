@@ -21,15 +21,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($user && password_verify($password, $user['password_hash'])) {
             $_SESSION['user']["name"] = [$user['username']];
-
             header('Location: /');
-            exit;
         } else {
             $errors[] = "E-Mail oder Passwort ist falsch.";
         }
     }
 }
-
 ?>
 
 <div class="form-wrapper">

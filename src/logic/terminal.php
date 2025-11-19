@@ -5,7 +5,6 @@ declare(strict_types=1);
 $response = "";
 $inputDirectory = implode("/", $_SESSION["curRoom"]->path);
 
-// echo "map:<br>" . json_encode($_SESSION["map"]) . "<br>";
 // echo "curRoom: <br>" . json_encode($_SESSION["curRoom"]) . "<br>";
 // echo "<br>items: " . json_encode($_SESSION["curRoom"] ->items);
 try {
@@ -13,7 +12,7 @@ try {
         return;
     }
     $inputArgs = organizeInput(explode(" ", $_POST["command"]));
-    $inputPathLength = count($inputArgs["path"]);
+    $inputPathLength = count(value: $inputArgs["path"]);
     // echo "<br>" . json_encode($inputArgs) . "<br>";
     switch ($inputArgs["command"]) {
         case "cd": {
@@ -105,8 +104,6 @@ $_SESSION["history"][] =
         "command" => $_POST["command"],
         "response" => $response
     ];
-        header("Location: " . $_SERVER["REQUEST_URI"]);
-exit;
 function organizeInput(array $inputArray)
 {
     if (empty($inputArray)) {

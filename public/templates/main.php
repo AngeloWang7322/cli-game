@@ -3,20 +3,58 @@ $title = "Shell spell";
 $extraCss[] = 'main.css';
 $script = "main.js";
 ?>
+
 <div class="game-container">
-    <div class="elements-wrapper">
-        <?php
-        foreach ($_SESSION["curRoom"]->doors as $door) {
-            echo "<div class='element'> <p>" . $door->name . "</p> </div>";
-        }
-        ?>
+    <div class="header-wrapper">
+        <div class="header-group">
+            <div class="">
+                Shell Spell
+            </div>
+        </div>
+        <div class="header-group">
+            <?php
+            if (!isset($_SESSION["user"])) {
+                echo '            <a href="register">
+                <div class="header-element">
+                    Register
+                    <img class="icon" src="../assets/images/icon_register.png" alt="register_icon">
+                </div>
+            </a>            
+            <a href="login">
+                <div class="header-element">
+                    Sign In
+                    <img class="icon" src="../assets/images/icon_profile.png" alt="profile_icon">
+                </div>
+            </a>';
+            } else {
+                echo '
+            <a href="profile">
+                <div class="header-element">
+                    Profile
+                    <img class="icon" src="../assets/images/icon_profile.png" alt="profile_icon">
+                </div>
+            </a>';
+            }
+            ?>
+
+
+        </div>
     </div>
-    <div class="elements-wrapper">
-        <?php
-        foreach ($_SESSION["curRoom"]->items as $item) {
-            echo "<div class='element item'> <p>" . $item->name . "</p> </div>";
-        }
-        ?>
+    <div class="elements-container">
+        <div class="elements-wrapper">
+            <?php
+            foreach ($_SESSION["curRoom"]->doors as $door) {
+                echo "<div class='element'> <p>" . $door->name . "</p> </div>";
+            }
+            ?>
+        </div>
+        <div class="elements-wrapper">
+            <?php
+            foreach ($_SESSION["curRoom"]->items as $item) {
+                echo "<div class='element item'> <p>" . $item->name . "</p> </div>";
+            }
+            ?>
+        </div>
     </div>
     <div class="ui-wrapper">
         <div class="spellbook-wrapper">

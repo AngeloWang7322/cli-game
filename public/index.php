@@ -8,8 +8,8 @@ require __DIR__ . '/../src/model/item.php';
 require __DIR__ . '/../src/model/scroll.php';
 
 session_start();
-
 // session_unset();         
+
 if (!isset($_SESSION["history"])) {
     $_SESSION["history"] = [];
     $_SESSION["map"] = new Room("hall");
@@ -60,6 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
     header("Location: " . $_SERVER["REQUEST_URI"]);
     exit;
 }
+
 $routes = [
     '' => 'main.php',
     'login' => 'login.php',
@@ -77,7 +78,6 @@ if (isset($routes[$path])) {
     require __DIR__ . '/templates//' . $routes['notfound'];
 }
 
-require __DIR__ . '/assets/header.php';
 require __DIR__ . '/assets/footer.php';
 require __DIR__ . '/assets/layout.php';
 ?>

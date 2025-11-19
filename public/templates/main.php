@@ -17,13 +17,13 @@ $script = "main.js";
                 echo '            <a href="register">
                 <div class="header-element">
                     Register
-                    <img class="icon" src="../assets/images/icon_register.png" alt="register_icon">
+                    <img class="icon" src="../assets/images/icon_register_white.png" alt="register_icon">
                 </div>
             </a>            
             <a href="login">
                 <div class="header-element">
                     Sign In
-                    <img class="icon" src="../assets/images/icon_profile.png" alt="profile_icon">
+                    <img class="icon" src="../assets/images/icon_profile_white.png" alt="profile_icon">
                 </div>
             </a>';
             } else {
@@ -31,13 +31,11 @@ $script = "main.js";
             <a href="profile">
                 <div class="header-element">
                     Profile
-                    <img class="icon" src="../assets/images/icon_profile.png" alt="profile_icon">
+                    <img class="icon-medium" src="../assets/images/icon_profile_white.png" alt="profile_icon">
                 </div>
             </a>';
             }
             ?>
-
-
         </div>
     </div>
     <div class="elements-container">

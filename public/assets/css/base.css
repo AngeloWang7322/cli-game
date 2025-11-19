@@ -6,15 +6,35 @@
     color: white;
     font-size: 22px;
     min-height: 100vh;
+    padding: 0;
 }
-
+body {
+    padding: 0;
+    margin: 0;
+}
 main {
     max-width: 800px;
     min-height: 100vh;
     margin: 2rem auto;
-    padding: 1rem;
 }
 
 button {
     padding: .6rem 1rem;
+}
+.page-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh; 
+    padding-top: 32px;
+}
+.icon-small{
+    width: 18px; 
+}
+.icon-medium {
+    width: 24px;
+}
+.icon-large{
+    width: 36px;
 }

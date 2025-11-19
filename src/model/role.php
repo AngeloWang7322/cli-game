@@ -1,0 +1,23 @@
+<?php
+enum ROLE: string
+{
+    case WANDERER = "wanderer";
+    case APPRENTICE = "apprentice";
+    case ARCHIVIST = "archivist";
+    case CONJURER = "conjurer";
+    case ROOT = "root";
+    
+    public function rank(): int{
+        return match($this)
+        {
+            self::WANDERER => 1,
+            self::APPRENTICE => 2,
+            self::ARCHIVIST => 3,
+            self::CONJURER => 4,
+            self::ROOT => 5,
+        };
+    }
+    public function isLowerThan($role): bool{
+        return $this ->rank() < $role -> rank();
+    }
+}

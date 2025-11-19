@@ -1,0 +1,12 @@
+.ui-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 95%;
+}
+.page-content {
+    justify-content: start;
+    align-items: center;
+}
+.back-button {
+}

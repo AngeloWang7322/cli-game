@@ -11,15 +11,11 @@
 
   <?php if (count($extraCss) > 0)
     foreach ($extraCss as $css) {
-      echo '<br><link rel="stylesheet" href="/assets/css/' .  htmlspecialchars($css) . '">';
+      echo '<link rel="stylesheet" href="/assets/css/' .  htmlspecialchars($css) . '">';
     }
   ?>
   <?php if (!empty($script)): ?>
     <script src="/scripts/<?= htmlspecialchars($script) ?>"></script>
   <?php endif; ?>
 </head>
-
-<body>
-</body>
-
 </html>

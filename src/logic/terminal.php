@@ -50,6 +50,11 @@ try {
                 break;
             }
         case "rm": {
+
+                // if (!roleIsHigherThanRoomRecursive($_SESSION["user"]["role"], getRoom($inputArgs["path"]) )) {
+                //     $response = "not enough experience";
+                //     break;
+                // }
                 deleteElement($inputArgs["path"]);
                 break;
             }
@@ -57,10 +62,8 @@ try {
                 $destinationRoom = &getRoom($inputArgs["path_2"]);
                 if (empty($inputArgs["path_2"])) {
                     throw new Exception("no source path provided");
-                }
-                else if ($inputArgs["path"][0] == $inputArgs["path_2"][0])
-                {
-                    throw new Exception ("cannot move room into itsself");
+                } else if ($inputArgs["path"][0] == $inputArgs["path_2"][0]) {
+                    throw new Exception("cannot move room into itsself");
                 }
 
                 if (stristr(end($inputArgs["path"]), '.')) {
@@ -69,7 +72,7 @@ try {
                     updateItemPaths($destinationRoom);
                 } else {
                     $tempRoom = &getRoom($inputArgs["path"]);
-                    $destinationRoom->doors[$tempRoom->name] = $tempRoom;    
+                    $destinationRoom->doors[$tempRoom->name] = $tempRoom;
                     updatePathsAfterMv($destinationRoom);
                 }
                 deleteElement($inputArgs["path"]);
@@ -77,13 +80,13 @@ try {
             }
         case "cat": {
                 $catItem = &getItem($inputArgs["path"]);
-                $_SESSION["openedScroll"]->header = $catItem->name; 
+                $_SESSION["openedScroll"]->header = $catItem->name;
                 $_SESSION["openedScroll"]->content = $catItem->content;
                 $_SESSION["openedScroll"]->isOpen = true;
                 break;
             }
         default: {
-            // echo "<br>substr: " . substr($inputArgs["command"], 2);
+                // echo "<br>substr: " . substr($inputArgs["command"], 2);
                 if (strncmp($inputArgs["command"], "./", 2) == 0) {
                     $itemExec = &getItem(explode("/", substr($inputArgs["command"], 2)));
                     $itemExec->executeAction();
@@ -210,6 +213,9 @@ function deleteElement($path)
     }
 
     if (in_array(end($path), array_keys($tempRoom->doors))) {
+        if (!roleIsHigherThanRoomRecursive($_SESSION["user"]["role"], getRoom($path))) {
+            throw new Exception("not enough experience");
+        }
         unset($tempRoom->doors[end($path)]);
     } else if (in_array(end($path), array_keys($tempRoom->items))) {
         unset($tempRoom->items[end($path)]);
@@ -217,23 +223,34 @@ function deleteElement($path)
         throw new Exception("element not found");
     }
 }
-
-function updatePathsAfterMv(&$room) {
-    foreach ($room -> doors as &$door)
-    {
-        $path = $room -> path;
-        foreach($door -> items as &$item){
-            $item -> path = array_merge($path, $item -> name);
+function roleIsHigherThanRoomRecursive(Role $role, &$room)
+{
+    if ($role->isLowerThan($room->requiredRole)) {
+        return false;
+    }
+    foreach ($room->doors as &$door) {
+        if(!roleIsHigherThanRoomRecursive($role, $door))
+        {
+            return false;
         }
-        $door -> path = array_merge($path, array($door -> name));
-        updatePathsAfterMv($door);  
+    }
+    return true;
+}
+function updatePathsAfterMv(&$room)
+{
+    foreach ($room->doors as &$door) {
+        $path = $room->path;
+        foreach ($door->items as &$item) {
+            $item->path = array_merge($path, $item->name);
+        }
+        $door->path = array_merge($path, array($door->name));
+        updatePathsAfterMv($door);
     }
 }
 function updateItemPaths(&$room)
 {
-    foreach($room -> items as $item)
-    {
-        $item -> path = array_merge($room-> path, $item -> name);
+    foreach ($room->items as $item) {
+        $item->path = array_merge($room->path, $item->name);
     }
 }
 function editMana($amount)

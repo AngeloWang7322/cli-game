@@ -5,9 +5,9 @@ class Room
     public array $path = [];
     public array $doors = [];
     public array $items = [];
-    public Role $requiredRole;
+    public ROLE $requiredRole;
 
-    function __construct($name, $requiredRole = Role::WANDERER, array $path = [])
+    function __construct($name, $requiredRole = ROLE::WANDERER, array $path = [])
     {
         $this->name = $name;
 
@@ -19,12 +19,4 @@ class Room
         }
         $this->requiredRole = $requiredRole;
     }
-}
-enum Role: string
-{
-    case WANDERER = "wanderer";
-    case APPRENTICE = "apprentice";
-    case ARCHIVIST = "archivist";
-    case CONJURER = "conjurer";
-    case ROOT = "root";
 }

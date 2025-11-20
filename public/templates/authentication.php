@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-require_once "./../src/db.php";
+require_once "./../src/db/db.php";
 
 $errors = [];
 $success = "";

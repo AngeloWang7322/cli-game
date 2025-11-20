@@ -1,1 +1,0 @@
-currRoom in user speichern?

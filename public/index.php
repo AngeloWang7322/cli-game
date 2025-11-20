@@ -6,11 +6,12 @@ require __DIR__ . '/../src/model/room.php';
 require __DIR__ . '/../src/model/user.php';
 require __DIR__ . '/../src/model/item.php';
 require __DIR__ . '/../src/model/scroll.php';
-require_once __DIR__ . '/../src/model/role.php';
+require_once  __DIR__ . '/../src/db/db.php';
+require __DIR__ . '/../src/model/role.php';
 
+echo "asdad";
 session_start();
-
-// session_unset();         
+session_unset();         
 if (!isset($_SESSION["history"])) {
     $_SESSION["history"] = [];
     $_SESSION["map"] = new Room("hall");

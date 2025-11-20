@@ -20,7 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password_hash'])) {
-            $_SESSION['user']["name"] = [$user['username']];
+            $_SESSION['user']["name"] = $user['username'];
+            $_SESSION["user"]["id"] = $user["id"];
             header('Location: /');
         } else {
             $errors[] = "E-Mail oder Passwort ist falsch.";

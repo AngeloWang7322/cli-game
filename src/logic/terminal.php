@@ -211,7 +211,7 @@ function deleteElement($path)
 
     if (in_array(end($path), array_keys($tempRoom->doors))) {
         if (!roleIsHigherThanRoomRecursive($_SESSION["user"]["role"], getRoom($path))) {
-            throw new Exception("not enough experience");
+            throw new Exception("rank too low");
         }
         unset($tempRoom->doors[end($path)]);
     } else if (in_array(end($path), array_keys($tempRoom->items))) {

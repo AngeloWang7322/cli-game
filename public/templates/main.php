@@ -13,7 +13,7 @@ $script = "main.js";
         </div>
         <div class="header-group">
             <?php
-            if (!isset($_SESSION["user"])) {
+            if (!isset($_SESSION["user"]["id"])) {
                 echo '            <a href="register">
                 <div class="header-element">
                     Register

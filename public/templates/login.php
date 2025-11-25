@@ -1,15 +1,15 @@
 <?php
-declare(strict_types= 1);
+declare(strict_types=1);
 
 require_once "./../src/db/db.php";
-// require_once "./../src/dbhelper.php";
+require_once "./../src/db/dbhelper.php";
 
 $extraCss[] = "auth.css";
 $title = "Log In";
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email    = trim($_POST['email'] ?? '');
+    $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
     if ($email === '' || $password === '') {
@@ -20,14 +20,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email LIMIT 1");
         $stmt->execute([':email' => $email]);
         $user = $stmt->fetch();
+            echo "<br> login.php query response: <br>" . json_encode($user) ."";
 
         if ($user && password_verify($password, $user['password_hash'])) {
             $_SESSION['user']["name"] = $user['username'];
             $_SESSION["user"]["id"] = $user["id"];
-            header('Location: /');
         } else {
             $errors[] = "E-Mail oder Passwort ist falsch.";
-        }
+        }       
+        
+        $dbHelper = new DBHelper($pdo);
+
+        $dbHelper->loadUserData();            
+        header('Location: /');
     }
 }
 ?>

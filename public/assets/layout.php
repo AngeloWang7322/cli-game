@@ -8,7 +8,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/base.css">
-
+  <!-- <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico"> -->
+  <link rel="icon" href="assets/images/favicon-32x32.png">
+  <?php echo "<img src='assets/images/favicon-32x32.png'>";?>
+  <?php echo '<head>
+  <link rel="icon" type="image/png" href="assets/images/favicon-32x32.png">
+  </head>
+  ';?>
   <?php if (count($extraCss) > 0)
     foreach ($extraCss as $css) {
       echo '<link rel="stylesheet" href="/assets/css/' .  htmlspecialchars($css) . '">';

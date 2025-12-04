@@ -13,5 +13,5 @@ $options = [
 try {
     $pdo = new PDO($dsn, $dbuser, $dbpass, $options);
 } catch (PDOException $e) {
-    die("Datenbank-Verbindung fehlgeschlagen: " . $e->getMessage());
+    echo("Datenbank-Verbindung fehlgeschlagen: " . $e->getMessage());
 }

@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="icon" type="image/png" href="/assets/images/favicon-32.png">
 
   <?php if (count($extraCss) > 0)
     foreach ($extraCss as $css) {

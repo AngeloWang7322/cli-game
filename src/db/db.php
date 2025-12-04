@@ -13,6 +13,7 @@ $options = [
 try {
     $pdo = new PDO($dsn, $dbuser, $dbpass, $options);
 } catch (PDOException $e) {
+<<<<<<< HEAD
     echo "Datenbank-Verbindung fehlgeschlagen: " . $e->getMessage();
     
 //     if (!isset($_SESSION["history"])) {
@@ -51,4 +52,7 @@ try {
 //     $_SESSION["openedScroll"] = new Scroll("", "");
 //     $_SESSION["user"]["role"] = ROLE::WANDERER;
 // }
+=======
+    echo("Datenbank-Verbindung fehlgeschlagen: " . $e->getMessage());
+>>>>>>> refs/remotes/origin/main
 }

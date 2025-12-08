@@ -81,9 +81,7 @@ try {
         }
         case "cat": {
             $catItem = &getItem($inputArgs["path"]);
-            $_SESSION["openedScroll"]->header = $catItem->name;
-            $_SESSION["openedScroll"]->content = $catItem->content;
-            $_SESSION["openedScroll"]->isOpen = true;
+            $catItem->executeAction();
             break;
         }
         default: {

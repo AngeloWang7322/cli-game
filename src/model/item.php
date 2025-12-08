@@ -15,15 +15,13 @@ class Item
         $this->action = $action;
         $this->rarity = $rarity;
         $this->content = $content;
-        if(empty($name)){
+        if (empty($name)) {
             $this->name = $baseName . "." . match ($type) {
                 ItemType::SCROLL => ItemType::SCROLL->value,
                 ItemType::SPELL => ItemType::SPELL->value,
                 ItemType::STATUE => ItemType::STATUE->value,
             };
-        }
-
-        else {
+        } else {
             $this->name = $name;
         }
     }
@@ -44,9 +42,17 @@ class Item
 
     public function executeAction()
     {
-        $actionFunction = $this->action->value;
-        echo "<br>executing: " . $actionFunction;
-        $this->$actionFunction();
+        switch ($this->type->value) {
+            case "exe": {
+                $actionFunction = $this->action->value;
+                $this->$actionFunction();
+                break;
+            }
+            case "txt": {
+                $this->openScroll();
+                break;
+            }
+        }
     }
     function getMana()
     {
@@ -61,6 +67,12 @@ class Item
                 $_SESSION["curMana"] += 50;
                 break;
         }
+    }
+    function openScroll()
+    {
+        $_SESSION["openedScroll"]->header = $this -> name;
+        $_SESSION["openedScroll"]->content = $this ->content;
+        $_SESSION["openedScroll"]->isOpen = true;
     }
 }
 

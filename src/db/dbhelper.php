@@ -125,7 +125,11 @@ class DBHelper
 
         $items = [];
         foreach ($data->items as $key => $itemData) {
-            $items[$key] = Item::fromArray((array) $itemData);
+            $items[$key] = match ($itemData->type) {
+                ItemType::SCROLL->value => Scroll::fromArray((array) $itemData),
+                ItemType::SPELL->value => Spell::fromArray((array) $itemData),
+                ItemType::ALTER->value => Alter::fromArray((array) $itemData),
+            };
         }
 
         $path = $data->path;
@@ -194,7 +198,7 @@ class DBHelper
         $_SESSION["maxMana"] = 100;
         $_SESSION["curMana"] = 100;
         $_SESSION["openedScroll"] = new Scroll(
-            "", 
+            "",
             "",
             ItemType::SCROLL,
             content: ""

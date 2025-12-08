@@ -152,7 +152,8 @@
 }
 
 .door {
-    height: 200px;
+    height: 300px;
+    width: 200px;
     background-image: url("../images/door.png");
     background-size: fit-content;
     background-position: center;

@@ -71,7 +71,6 @@ class Alter extends Item
 {
     public bool $isActive;
     public string $newDoor;
-
     public string $spellReward;
     public int $xpReward;
 
@@ -127,22 +126,15 @@ class Spell extends Item
     public function executeAction()
     {
         $actionFunction = $this->action->value;
-        echo "<br>executing: " . $actionFunction;
         $this->$actionFunction();
     }
     function getMana()
     {
-        switch ($this->rarity) {
-            case Rarity::COMMON:
-                $_SESSION["curMana"] += 10;
-                break;
-            case Rarity::RARE:
-                $_SESSION["curMana"] += 25;
-                break;
-            case Rarity::EPIC:
-                $_SESSION["curMana"] += 50;
-                break;
-        }
+        match ($this->rarity) {
+            Rarity::COMMON => $_SESSION["curMana"] += 10,
+            Rarity::RARE => $_SESSION["curMana"] += 25,
+            Rarity::EPIC => $_SESSION["curMana"] += 50
+        };
     }
     public static function fromArray(array $data)
     {
@@ -157,22 +149,4 @@ class Spell extends Item
             rarity: $rarity,
         );
     }
-}
-enum ItemType: string
-{
-    case SCROLL = "txt";
-    case SPELL = "sh";
-    case ALTER = "exe";
-}
-enum ActionType: string
-{
-    case GET_MANA = "getMana";
-    case OPEN_SCROLL = "openScroll";
-    case CREATE_DOOR = "createDoor";
-}
-enum Rarity: string
-{
-    case COMMON = "common";
-    case RARE = "rare";
-    case EPIC = "epic";
 }

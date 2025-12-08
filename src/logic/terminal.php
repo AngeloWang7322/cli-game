@@ -5,8 +5,6 @@ declare(strict_types=1);
 $response = "";
 $inputDirectory = implode("/", $_SESSION["curRoom"]->path);
 
-// echo "curRoom: <br>" . json_encode($_SESSION["curRoom"]) . "<br>";
-// echo "<br>items: " . json_encode($_SESSION["curRoom"] ->items);
 try {
     if (empty($_POST["command"])) {
         return;
@@ -82,7 +80,7 @@ try {
         case "cat": {
             $catItem = &getItem($inputArgs["path"]);
             if (is_a($catItem, "Scroll")) {
-                $catItem-> openScroll();
+                $catItem->openScroll();
                 break;
             } else {
                 throw new Exception("item not a scroll");
@@ -90,8 +88,9 @@ try {
         }
         default: {
             if (strncmp($inputArgs["command"], "./", 2) == 0) {
-                $itemExec= &getItem(explode("/", substr($inputArgs["command"], 2)));
-                switch($itemExec->type){}
+                $itemExec = &getItem(explode("/", substr($inputArgs["command"], 2)));
+                switch ($itemExec->type) {
+                }
                 $itemExec->executeAction();
                 break;
             } else {

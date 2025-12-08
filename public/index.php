@@ -8,7 +8,7 @@ require __DIR__ . '/../src/model/item.php';
 require __DIR__ . '/../src/model/scroll.php';
 require_once  __DIR__ . '/../src/db/db.php';
 require_once __DIR__ . '/../src/db/dbhelper.php';
-require __DIR__ . '/../src/model/role.php';
+require __DIR__ . '/../src/model/enums.php';
 
 session_start();
 // session_unset();    

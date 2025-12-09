@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 $response = "";
 $inputDirectory = implode("/", $_SESSION["curRoom"]->path);
-
+//test
 try {
     if (empty($_POST["command"])) {
         return;

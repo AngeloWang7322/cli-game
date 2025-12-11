@@ -70,11 +70,11 @@ class Scroll extends Item
 class Alter extends Item
 {
     public bool $isActive;
-    public string $newDoor;
+    public Room $newDoor;
     public string $spellReward;
     public int $xpReward;
 
-    public function __construct($name, $baseName, $type, $requiredRole = Role::WANDERER, $newDoor = "", $isActive = true, $spellReward = "", $xpReward = 0)
+    public function __construct($name, $baseName, $type, $requiredRole = Role::WANDERER, $newDoor, $isActive = true, $spellReward = "", $xpReward = 0)
     {
         $this->name = $name;
         $this->baseName = $baseName;
@@ -92,6 +92,11 @@ class Alter extends Item
     public function executeAction()
     {
         //alter execution logic
+        $_SESSION["curRoom"]->doors[$this->newDoor->name] = $this->newDoor;
+        $this->isActive = false;
+        if (!empty($this->spellReward)) {
+            
+        }
     }
     public static function fromArray(array $data)
     {

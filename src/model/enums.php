@@ -34,7 +34,7 @@ enum ActionType: string
     case OPEN_SCROLL = "openScroll";
     case CREATE_DOOR = "createDoor";
 }
-enum Spell: string {
+enum Commmand: string {
     case CD = "cd";
     case LS = "ls";
     case PWD = "pwd";

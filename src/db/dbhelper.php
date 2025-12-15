@@ -185,7 +185,7 @@ class DBHelper
             "ancientAlter",
             ItemType::ALTER,
             Role::CONJURER,
-            "",
+            new Room("rewardRoom"),
         );
         $_SESSION["maxMana"] = 100;
         $_SESSION["curMana"] = 100;

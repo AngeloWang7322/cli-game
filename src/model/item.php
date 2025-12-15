@@ -92,21 +92,25 @@ class Alter extends Item
     public function executeAction()
     {
         //alter execution logic
+        if(!$this->isActive){
+            return;
+        }
         $_SESSION["curRoom"]->doors[$this->newDoor->name] = $this->newDoor;
         $this->isActive = false;
         if (!empty($this->spellReward)) {
             
         }
+        if (!empty($this->xpReward)) {
+            
+        }
     }
     public static function fromArray(array $data)
     {
-        $type = ItemType::from($data["type"]);
-        $requiredRole = ROLE::from($data["requiredRole"]);
         return new self(
             name: $data['name'],
             baseName: $data["baseName"],
-            type: $type,
-            requiredRole: $requiredRole,
+            type: ItemType::from($data["type"]),
+            requiredRole: ROLE::from($data["requiredRole"]),
             newDoor: $data["newDoor"],
             isActive: $data["isActive"],
             spellReward: $data["spellReward"],

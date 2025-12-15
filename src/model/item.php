@@ -5,8 +5,12 @@ class Item
     public string $baseName;
     public ItemType $type;
     public Role $requiredRole;
-    public function __construct($name, $baseName, $type, $requiredRole = Role::WANDERER)
-    {
+    public function __construct(
+        $name,
+        $baseName,
+        $type,
+        $requiredRole = Role::WANDERER
+    ) {
         $this->name = $name;
         $this->baseName = $baseName;
         $this->type = $type;
@@ -37,8 +41,13 @@ class Scroll extends Item
 {
     public bool $isOpen = false;
     public string $content;
-    public function __construct($name, $baseName, $type, $requiredRole = Role::WANDERER, string $content = "")
-    {
+    public function __construct(
+        $name,
+        $baseName,
+        $type,
+        $requiredRole = Role::WANDERER,
+        string $content = ""
+    ) {
         $this->name = $name;
         $this->baseName = $baseName;
         $this->type = $type;
@@ -70,18 +79,29 @@ class Scroll extends Item
 class Alter extends Item
 {
     public bool $isActive;
-    public string $newDoor;
+    public $requiredElements;
+    public Room $newDoor;
     public string $spellReward;
     public int $xpReward;
 
-    public function __construct($name, $baseName, $type, $requiredRole = Role::WANDERER, $newDoor = "", $isActive = true, $spellReward = "", $xpReward = 0)
-    {
+    public function __construct(
+        $name,
+        $baseName,
+        $type,
+        $requiredRole = Role::WANDERER,
+        $isActive = true,
+        $requiredElements = [],
+        $newDoor,
+        $spellReward = "",
+        $xpReward = 0
+    ) {
         $this->name = $name;
         $this->baseName = $baseName;
         $this->type = $type;
         $this->requiredRole = $requiredRole;
-        $this->newDoor = $newDoor;
         $this->isActive = $isActive;
+        $this->requiredElements = $requiredElements;
+        $this->newDoor = $newDoor;
         $this->spellReward = $spellReward;
         $this->xpReward = $xpReward;
 
@@ -91,19 +111,37 @@ class Alter extends Item
     }
     public function executeAction()
     {
-        //alter execution logic
+        if (!$this->isActive) {
+            return;
+        }
+        foreach ($this->requiredElements as $element) {
+
+            if (!array_key_exists($element, $_SESSION["curRoom"]->items) || $_SESSION["curRoom"]->items[$element]->requiredRole != Role::ROOT) {
+                throw new Exception("conditions demanded by the alter not met.");
+
+            }
+        }
+
+        $_SESSION["curRoom"]->doors[$this->newDoor->name] = $this->newDoor;
+        $this->isActive = false;
+
+        if (!empty($this->spellReward)) {
+
+        }
+        if (!empty($this->xpReward)) {
+
+        }
     }
     public static function fromArray(array $data)
     {
-        $type = ItemType::from($data["type"]);
-        $requiredRole = ROLE::from($data["requiredRole"]);
         return new self(
             name: $data['name'],
             baseName: $data["baseName"],
-            type: $type,
-            requiredRole: $requiredRole,
-            newDoor: $data["newDoor"],
+            type: ItemType::from($data["type"]),
+            requiredRole: ROLE::from($data["requiredRole"]),
             isActive: $data["isActive"],
+            requiredElements: $data["requiredElements"],
+            newDoor: Room::fromArray($data["newDoor"]),
             spellReward: $data["spellReward"],
             xpReward: $data["xpReward"]
         );
@@ -112,8 +150,13 @@ class Alter extends Item
 class Spell extends Item
 {
     public ActionType $action;
-    public function __construct($name, $baseName, $type, $action = null, $requiredRole = Role::WANDERER, )
-    {
+    public function __construct(
+        $name,
+        $baseName,
+        $type,
+        $action = null,
+        $requiredRole = Role::WANDERER
+    ) {
         $this->name = $name;
         $this->baseName = $baseName;
         $this->type = $type;
@@ -141,7 +184,7 @@ class Spell extends Item
     public static function fromArray(array $data)
     {
         $type = ItemType::from($data["type"]);
-        $requiredRole = ROLE::from($data["requiredRole"]);
+        $requiredRole = Role::from($data["requiredRole"]);
         $action = ActionType::from($data["action"]);
         return new self(
             name: $data['name'],

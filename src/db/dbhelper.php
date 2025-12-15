@@ -39,6 +39,8 @@ class DBHelper
     }
     public function createUserRows($password, $email, $name)
     {
+        self::loadDefaultSession();
+
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         $userInsert = $this->pdo->prepare("
                 INSERT INTO users (username, email, password_hash)
@@ -52,7 +54,7 @@ class DBHelper
 
         self::loginUser($password, $email);
 
-        $mapInsert = $this->pdo->prepare("
+        $mapInsert = $this->pdo->prepare(" 
                 INSERT INTO user_maps (user_id, map_json) 
                 VALUES (:userid, :map_json)
             ");
@@ -110,43 +112,12 @@ class DBHelper
             }
         }
 
-        $_SESSION["map"] = self::fromArray(json_decode($userMap["map_json"]));
+        $_SESSION["map"] = Room::fromArray(json_decode($userMap["map_json"]));
         $_SESSION["curMana"] = $userStats["curMana"];
         $_SESSION["curRoom"] =& $_SESSION["map"];
         $_SESSION["history"] = [];
     }
 
-    public static function fromArray($data): Room
-    {
-        $doors = [];
-        foreach ($data->doors as $key => $roomData) {
-            $doors[$key] = self::fromArray($roomData);
-        }
-
-        $items = [];
-        foreach ($data->items as $key => $itemData) {
-            $items[$key] = match ($itemData->type) {
-                ItemType::SCROLL->value => Scroll::fromArray((array) $itemData),
-                ItemType::SPELL->value => Spell::fromArray((array) $itemData),
-                ItemType::ALTER->value => Alter::fromArray((array) $itemData),
-            };
-        }
-
-        $path = $data->path;
-        if (count($path) > 1) {
-            $path = array_slice($data->path, 0, -1);
-        }
-
-        $requiredRole = Role::from((string) $data->requiredRole);
-
-        return new Room(
-            $data->name,
-            $path,
-            $doors,
-            $items,
-            $requiredRole
-        );
-    }
     public static function loadDefaultSession()
     {
         session_unset();
@@ -155,7 +126,7 @@ class DBHelper
         $_SESSION["curRoom"] = &$_SESSION["map"];
         $_SESSION["map"]->path = ["hall"];
         $_SESSION["map"]->doors["library"] = new Room(name: "library", requiredRole: ROLE::APPRENTICE);
-        $_SESSION["map"]->doors["armory"] = new Room(name: "armory", requiredRole: ROLE::ARCHIVIST);
+        $_SESSION["map"]->doors["armory"] = new Room(name: "armory", requiredRole: ROLE::CONJURER);
         $_SESSION["map"]->doors["passage"] = new Room(name: "passage", requiredRole: ROLE::WANDERER);
         $_SESSION["map"]->doors["passage"]->doors["staircase"] = new Room(name: "staircase", path: $_SESSION["map"]->doors["passage"]->path, requiredRole: ROLE::ROOT);
 
@@ -170,7 +141,7 @@ class DBHelper
             "",
             "grimoire",
             ItemType::SCROLL,
-            Role::ROOT,
+            Role::CONJURER,
             "OPEN SCROLL: <br>'cat [scroll name]'<br>"
         );
         $_SESSION["map"]->items["oldDiary.txt"] = new Scroll(
@@ -185,7 +156,16 @@ class DBHelper
             "ancientAlter",
             ItemType::ALTER,
             Role::CONJURER,
+            true,
+            ["dusty_key.txt"],
+            new Room("rewardRoom"),
+        );
+        $_SESSION["map"]->doors["passage"]->items["dusty_key.txt"] = new Scroll(
             "",
+            "dusty_key",
+            ItemType::SCROLL,
+            Role::ROOT,
+            "Tak pease and wassh hem clene, and ley hem in watre over nyght, that they may swelle and waxe tendre. On the morwe, set hem on the fyre in a fayre pot with clene watre, and let hem boyle softly til they breke.  Then tak an oynoun and hew it smal, and put it therinne with salt ynowe. Add herbes, as perselye or saverey, if thou hast, and let al seeth togider.  Whan the potage is thikke and smothe, tak it fro the fyre and serve it hote, with brede y-toasted or a crust therof. This potage is good for the body and may serve pore and riche.",
         );
         $_SESSION["maxMana"] = 100;
         $_SESSION["curMana"] = 100;
@@ -196,6 +176,6 @@ class DBHelper
             content: ""
         );
         $_SESSION["user"]["role"] = ROLE::WANDERER;
-        $_SESSION["lastPath"][] = $_SESSION["curRoom"]->path;
+        $_SESSION["lastPath"] =[];
     }
 }

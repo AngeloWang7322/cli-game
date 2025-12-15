@@ -54,9 +54,13 @@ $script = "main.js";
         <div class="elements-wrapper">
             <?php
             foreach ($_SESSION["curRoom"]->items as $item) {
+                $itemClasses = $item->type->value;
+                if ($item->type == ItemType::ALTER && !$item->isActive) {
+                    $itemClasses .= " alter-inactive";
+                }
                 echo "
                 <div class='element-container'>
-                    <div class='element item " . $item->type->value . "'> </div>
+                    <div class='element item " . $itemClasses . "'> </div>
                     <p class='element-name " . $item->requiredRole->value . "'>" . $item->name . "</p>
                 </div> 
                 ";

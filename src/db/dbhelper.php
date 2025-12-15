@@ -110,43 +110,13 @@ class DBHelper
             }
         }
 
-        $_SESSION["map"] = self::fromArray(json_decode($userMap["map_json"]));
+        $_SESSION["map"] = Room::fromArray(json_decode($userMap["map_json"]));
         $_SESSION["curMana"] = $userStats["curMana"];
         $_SESSION["curRoom"] =& $_SESSION["map"];
         $_SESSION["history"] = [];
     }
 
-    public static function fromArray($data): Room
-    {
-        $doors = [];
-        foreach ($data->doors as $key => $roomData) {
-            $doors[$key] = self::fromArray($roomData);
-        }
 
-        $items = [];
-        foreach ($data->items as $key => $itemData) {
-            $items[$key] = match ($itemData->type) {
-                ItemType::SCROLL->value => Scroll::fromArray((array) $itemData),
-                ItemType::SPELL->value => Spell::fromArray((array) $itemData),
-                ItemType::ALTER->value => Alter::fromArray((array) $itemData),
-            };
-        }
-
-        $path = $data->path;
-        if (count($path) > 1) {
-            $path = array_slice($data->path, 0, -1);
-        }
-
-        $requiredRole = Role::from((string) $data->requiredRole);
-
-        return new Room(
-            $data->name,
-            $path,
-            $doors,
-            $items,
-            $requiredRole
-        );
-    }
     public static function loadDefaultSession()
     {
         session_unset();
@@ -185,6 +155,8 @@ class DBHelper
             "ancientAlter",
             ItemType::ALTER,
             Role::CONJURER,
+            true,
+            "",
             new Room("rewardRoom"),
         );
         $_SESSION["maxMana"] = 100;

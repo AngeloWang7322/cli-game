@@ -5,8 +5,12 @@ class Item
     public string $baseName;
     public ItemType $type;
     public Role $requiredRole;
-    public function __construct($name, $baseName, $type, $requiredRole = Role::WANDERER)
-    {
+    public function __construct(
+        $name,
+        $baseName,
+        $type,
+        $requiredRole = Role::WANDERER
+    ) {
         $this->name = $name;
         $this->baseName = $baseName;
         $this->type = $type;
@@ -37,8 +41,13 @@ class Scroll extends Item
 {
     public bool $isOpen = false;
     public string $content;
-    public function __construct($name, $baseName, $type, $requiredRole = Role::WANDERER, string $content = "")
-    {
+    public function __construct(
+        $name,
+        $baseName,
+        $type,
+        $requiredRole = Role::WANDERER,
+        string $content = ""
+    ) {
         $this->name = $name;
         $this->baseName = $baseName;
         $this->type = $type;
@@ -70,18 +79,30 @@ class Scroll extends Item
 class Alter extends Item
 {
     public bool $isActive;
+    /** @var Room[] $conditions */
+    public $condition;
     public Room $newDoor;
     public string $spellReward;
     public int $xpReward;
 
-    public function __construct($name, $baseName, $type, $requiredRole = Role::WANDERER, $newDoor, $isActive = true, $spellReward = "", $xpReward = 0)
-    {
+    public function __construct(
+        $name,
+        $baseName,
+        $type,
+        $requiredRole = Role::WANDERER,
+        $isActive = true,
+        $condition,
+        $newDoor,
+        $spellReward = "",
+        $xpReward = 0
+    ) {
         $this->name = $name;
         $this->baseName = $baseName;
         $this->type = $type;
         $this->requiredRole = $requiredRole;
-        $this->newDoor = $newDoor;
         $this->isActive = $isActive;
+        $this->condition = $condition;
+        $this->newDoor = $newDoor;
         $this->spellReward = $spellReward;
         $this->xpReward = $xpReward;
 
@@ -92,16 +113,16 @@ class Alter extends Item
     public function executeAction()
     {
         //alter execution logic
-        if(!$this->isActive){
+        if (!$this->isActive) {
             return;
         }
         $_SESSION["curRoom"]->doors[$this->newDoor->name] = $this->newDoor;
         $this->isActive = false;
         if (!empty($this->spellReward)) {
-            
+
         }
         if (!empty($this->xpReward)) {
-            
+
         }
     }
     public static function fromArray(array $data)
@@ -111,8 +132,9 @@ class Alter extends Item
             baseName: $data["baseName"],
             type: ItemType::from($data["type"]),
             requiredRole: ROLE::from($data["requiredRole"]),
-            newDoor: $data["newDoor"],
             isActive: $data["isActive"],
+            condition: $data["condition"],
+            newDoor: Room::fromArray((array)$data["newDoor"]),
             spellReward: $data["spellReward"],
             xpReward: $data["xpReward"]
         );

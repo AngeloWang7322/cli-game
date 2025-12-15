@@ -29,9 +29,8 @@ try {
                     if (count($inputArgs["path"]) == 0) {
                         throw new Exception("no path provided");
                     }
-
                     pushNewLastPath($_SESSION["curRoom"]->path);
-
+                    
                     $_SESSION["curMana"] -= (count($inputArgs["path"]) - 1) * 2;
                     $_SESSION["curRoom"] = &getRoom($inputArgs["path"], true);
                     break;

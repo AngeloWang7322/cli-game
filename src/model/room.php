@@ -14,7 +14,12 @@ class Room
 
     public ROLE $requiredRole;
 
-    function __construct($name, array $path = [], $doors = [], $items = [], $requiredRole = ROLE::WANDERER)
+    function __construct(
+        $name, 
+        array $path = [], 
+        $doors = [], 
+        $items = [], 
+        $requiredRole = ROLE::WANDERER)
     {
         $this->name = $name;
         $this->path = $path;

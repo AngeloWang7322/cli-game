@@ -79,8 +79,7 @@ class Scroll extends Item
 class Alter extends Item
 {
     public bool $isActive;
-    /** @var Room[] $conditions */
-    public $condition;
+    public $requiredElements;
     public Room $newDoor;
     public string $spellReward;
     public int $xpReward;
@@ -91,7 +90,7 @@ class Alter extends Item
         $type,
         $requiredRole = Role::WANDERER,
         $isActive = true,
-        $condition,
+        $requiredElements = [],
         $newDoor,
         $spellReward = "",
         $xpReward = 0
@@ -101,7 +100,7 @@ class Alter extends Item
         $this->type = $type;
         $this->requiredRole = $requiredRole;
         $this->isActive = $isActive;
-        $this->condition = $condition;
+        $this->requiredElements = $requiredElements;
         $this->newDoor = $newDoor;
         $this->spellReward = $spellReward;
         $this->xpReward = $xpReward;
@@ -112,12 +111,20 @@ class Alter extends Item
     }
     public function executeAction()
     {
-        //alter execution logic
         if (!$this->isActive) {
             return;
         }
+        foreach ($this->requiredElements as $element) {
+
+            if (!array_key_exists($element, $_SESSION["curRoom"]->items) || $_SESSION["curRoom"]->items[$element]->requiredRole != Role::ROOT) {
+                throw new Exception("conditions demanded by the alter not met.");
+
+            }
+        }
+
         $_SESSION["curRoom"]->doors[$this->newDoor->name] = $this->newDoor;
         $this->isActive = false;
+
         if (!empty($this->spellReward)) {
 
         }
@@ -133,8 +140,8 @@ class Alter extends Item
             type: ItemType::from($data["type"]),
             requiredRole: ROLE::from($data["requiredRole"]),
             isActive: $data["isActive"],
-            condition: $data["condition"],
-            newDoor: Room::fromArray((array)$data["newDoor"]),
+            requiredElements: $data["requiredElements"],
+            newDoor: Room::fromArray($data["newDoor"]),
             spellReward: $data["spellReward"],
             xpReward: $data["xpReward"]
         );
@@ -143,8 +150,13 @@ class Alter extends Item
 class Spell extends Item
 {
     public ActionType $action;
-    public function __construct($name, $baseName, $type, $action = null, $requiredRole = Role::WANDERER, )
-    {
+    public function __construct(
+        $name,
+        $baseName,
+        $type,
+        $action = null,
+        $requiredRole = Role::WANDERER
+    ) {
         $this->name = $name;
         $this->baseName = $baseName;
         $this->type = $type;
@@ -172,7 +184,7 @@ class Spell extends Item
     public static function fromArray(array $data)
     {
         $type = ItemType::from($data["type"]);
-        $requiredRole = ROLE::from($data["requiredRole"]);
+        $requiredRole = Role::from($data["requiredRole"]);
         $action = ActionType::from($data["action"]);
         return new self(
             name: $data['name'],

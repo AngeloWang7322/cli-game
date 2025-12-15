@@ -31,11 +31,11 @@ try {
                     }
 
                     pushNewLastPath($_SESSION["curRoom"]->path);
-                    
+
                     $_SESSION["curMana"] -= (count($inputArgs["path"]) - 1) * 2;
                     $_SESSION["curRoom"] = &getRoom($inputArgs["path"], true);
                     break;
-                } 
+                }
             }
             break;
         }
@@ -79,7 +79,7 @@ try {
                 $destinationRoom->doors[$tempRoom->name] = $tempRoom;
                 updatePathsAfterMv($destinationRoom);
             }
-            deleteElement($inputArgs["path"]);
+            deleteElement($inputArgs["path"], false);
             break;
         }
         case "cat": {
@@ -215,7 +215,7 @@ function &getItem($path)
     }
 }
 
-function deleteElement($path)
+function deleteElement($path, $rankRestrictive = true)
 {
     if (count($path) > 1) {
         $tempRoom = &getRoom(array_slice($path, 0, -1));
@@ -224,7 +224,7 @@ function deleteElement($path)
     }
 
     if (in_array(end(array: $path), array_keys($tempRoom->doors))) {
-        if (!roleIsHigherThanRoomRecursive($_SESSION["user"]["role"], getRoom($path))) {
+        if (!roleIsHigherThanRoomRecursive($_SESSION["user"]["role"], getRoom($path)) && $rankRestrictive) {
             throw new Exception("rank too low");
         }
         unset($tempRoom->doors[end($path)]);
@@ -232,7 +232,7 @@ function deleteElement($path)
         in_array(end($path), array_keys($tempRoom->items))
 
     ) {
-        if ($_SESSION["user"]["role"]->isLowerThan($tempRoom->items[end($path)]->requiredRole)) {
+        if ($_SESSION["user"]["role"]->isLowerThan($tempRoom->items[end($path)]->requiredRole) && $rankRestrictive) {
             throw new Exception("rank too low");
         }
         unset($tempRoom->items[end($path)]);
@@ -259,7 +259,7 @@ function updatePathsAfterMv(&$room)
     foreach ($room->doors as &$door) {
         $path = $room->path;
         foreach ($door->items as &$item) {
-            $item->path = array_merge($path, $item->name);
+            $item->path = array_merge($path, (array) $item->name);
         }
         $door->path = array_merge($path, array($door->name));
         updatePathsAfterMv($door);
@@ -268,7 +268,7 @@ function updatePathsAfterMv(&$room)
 function updateItemPaths(&$room)
 {
     foreach ($room->items as $item) {
-        $item->path = array_merge($room->path, $item->name);
+        $item->path = array_merge($room->path, (array) $item->name);
     }
 }
 function editMana($amount)

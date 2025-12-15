@@ -248,16 +248,19 @@ a {
 }
 
 .archivist {
-    color: tomato;
+    color: rgb(48, 181, 199);
 }
 
 .conjurer {
-    color: rgb(48, 181, 199)
+    color: rgb(150, 48, 218);
 }
 
 .root {
-    color: rgb(150, 48, 218)
+    color: tomato;
 }
+
+
+
 
 .title-container {
     display: flex;
